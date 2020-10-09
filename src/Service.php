@@ -12,8 +12,8 @@ class Service extends BaseService
         });
 
         $this->commands([
-            'build' => command\Build::class,
-            'clear' => command\Clear::class,
+            'addon' => command\Addon::class,
+            'unaddon' => command\Unaddon::class,
         ]);
 
         /*

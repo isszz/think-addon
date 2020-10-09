@@ -7,12 +7,12 @@ use think\console\input\Argument;
 use think\console\input\Option;
 use think\console\Output;
 
-class Clear extends Command
+class Unaddon extends Command
 {
     protected function configure()
     {
         // 指令配置
-        $this->setName('clear')
+        $this->setName('unaddon')
             ->addArgument('addon', Argument::OPTIONAL, 'addon name .')
             ->addOption('cache', 'c', Option::VALUE_NONE, 'clear cache file')
             ->addOption('log', 'l', Option::VALUE_NONE, 'clear log file')

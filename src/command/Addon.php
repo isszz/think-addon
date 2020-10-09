@@ -6,7 +6,7 @@ use think\console\Input;
 use think\console\input\Argument;
 use think\console\Output;
 
-class Build extends Command
+class Addon extends Command
 {
     /**
      * 扩展基础目录
@@ -19,7 +19,7 @@ class Build extends Command
      */
     protected function configure()
     {
-        $this->setName('build')
+        $this->setName('addon')
             ->addArgument('addon', Argument::OPTIONAL, 'addon name .')
             ->setDescription('Build Addon Dirs');
     }
@@ -33,7 +33,8 @@ class Build extends Command
             $list = include $this->basePath . 'build.php';
         } else {
             $list = [
-                '__dir__' => ['controller', 'model', 'view'],
+                '__dir__' => ['index/controller', 'index/model', 'index/view'],
+                '__file__' => ['common.php', 'middleware.php', 'event.php', 'provider.php', 'route/web.php'],
             ];
         }
 
