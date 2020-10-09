@@ -1,0 +1,36 @@
+{
+    "name": "topthink/think-addon",
+    "description": "thinkphp6 addon support",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "isszz",
+            "email": "isszz@qq.com"
+        }
+    ],
+    "require": {
+    	"php": ">=7.1.0",
+        "topthink/framework": "^6.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "isszz\\addon\\": "src"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "dev-dev"
+        },
+        "think":{
+            "services":[
+                "isszz\\addon\\Service"
+            ],
+            "config":{
+                "svgcaptcha": "src/config/config.php"
+            }
+        }
+    }
+}
