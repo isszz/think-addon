@@ -2,6 +2,8 @@
 
 thinkphp6 addon support
 
+半成品请勿使用
+
 ## 安装
 
 ```shell
