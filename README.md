@@ -36,7 +36,7 @@ php think addon demo
 
 生成后我们就可以访问demo扩展
 
-`
+```
 ├─addon 扩展目录
 │  ├─index              主模型相关
 │  │  ├─controller      控制器目录
@@ -49,8 +49,7 @@ php think addon demo
 │  │  ├─model           模型目录
 │  │  ├─view            视图目录
 │  │  └─ ...            更多类库目录
-
-`
+```
 
 ## 访问扩展说明
 
