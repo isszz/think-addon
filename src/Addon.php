@@ -46,7 +46,7 @@ class addon
     }
 
     /**
-     * 多应用解析
+     * 解析扩展
      * 
      * @param Request $request
      * @param Closure $next
@@ -160,9 +160,9 @@ class addon
             }
         }
 
-        // 设置应用命名空间
+        // 设置扩展命名空间
         $this->app->setNamespace('addon\\' . $addon . '\\' . $module);
-        // 把应用目录设置为插件模块目录
+        // 把应用目录设置为扩展模块目录
         $this->app->setAppPath($addonPath . $module . DS);
         // 设置运行存储目录
         $this->app->setRuntimePath($this->app->getRuntimePath() . 'addon' . DS . $addon . DS);
@@ -181,7 +181,7 @@ class addon
     /**
      * 加载扩展文件
      * 
-     * @param string $addonName 应用名
+     * @param string $addonName 扩展名
      * @return void
      */
     protected function loadAddon(string $addonName, string $addonPath): void
@@ -208,7 +208,7 @@ class addon
         if (is_file($addonPath . 'provider' . EXT)) {
             $this->app->bind(include $addonPath . 'provider' . EXT);
         }
-        // 加载应用默认语言包
+        // 加载扩展默认语言包
         // $this->app->loadLangPack($this->app->lang->defaultLangSet());
     }
 
@@ -217,7 +217,7 @@ class addon
      */
     protected function loadEvent()
     {
-        $eventList = Cache::get('addon_event_list');
+        $eventList = Cache::get('addon_global_event_list');
 
         if (empty($eventList)) {
             $addonModel = new AddonModel();
@@ -241,7 +241,7 @@ class addon
                 $eventList[] = $listen;
             }
 
-            Cache::tag('addon')->set('addon_event_list', $eventList);
+            Cache::tag('addon')->set('addon_global_event_list', $eventList);
         }
 
         if (!empty($eventList)) {
