@@ -40,13 +40,13 @@ php think addon demo
 
 ```
 ├─addon 扩展目录
-│  ├─index              主模型相关
+│  ├─index              主应用相关
 │  │  ├─controller      控制器目录
 │  │  ├─model           模型目录
 │  │  ├─view            视图目录
 │  │  └─ ...            更多类库目录
 │  │ 
-│  ├─admin              后台模型相关
+│  ├─admin              后台应用相关
 │  │  ├─controller      控制器目录
 │  │  ├─model           模型目录
 │  │  ├─view            视图目录
@@ -55,4 +55,4 @@ php think addon demo
 
 ## 访问扩展说明
 
-默认访问扩展时优先查找: 模型 -> 控制器 -> 方法
+默认访问扩展时优先查找: 应用 -> 控制器 -> 方法

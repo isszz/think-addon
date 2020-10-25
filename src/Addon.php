@@ -80,8 +80,9 @@ class addon
      */
     protected function parseAddon()
     {
-        // 检测当前pathinfo
+        // 这里后期应该查询是否存在应用, 如果存在就跳过
         $sysList = ['install', 'admin', 'adm', 'index', 'common', 'store', 'user', 'api', 'article', 'pay', 'public', 'app'];
+        // 检测当前pathinfo
         $pathinfo = $this->app->request->pathinfo();
         $pathinfoArr = explode('/', $pathinfo);
         $url = $this->app->request->domain();
@@ -93,24 +94,24 @@ class addon
             return false;
         }
 
-        $module     = empty($pathinfoArr[1]) ? 'index' : $pathinfoArr[1];
+        $appName     = empty($pathinfoArr[1]) ? 'index' : $pathinfoArr[1];
         $controller = empty($pathinfoArr[2]) ? 'index' : $pathinfoArr[2];
         $method     = empty($pathinfoArr[3]) ? 'index' : $pathinfoArr[3];
 
         $this->app->request->addon($addon);
 
         $addonPath = $this->app->getRootPath() . 'addon' . DS . $addon . DS;
-        $modulePath = $addonPath . $module . DS;
+        $appPath = $addonPath . $appName . DS;
 
-        // dd($modulePath);
+        // dd($appPath);
         if (!is_dir($addonPath)) {
             return false;
         }
         // 优先查找控制器, 不存在则在默认控制Index查找方法
-        // 指定module
-        if(is_dir($modulePath)) {
+        // 指定app
+        if(is_dir($appPath)) {
             // 检测控制器文件，设置控制器
-            if(is_file($modulePath . 'controller' . DS . ucfirst($controller) . EXT)) {
+            if(is_file($appPath . 'controller' . DS . ucfirst($controller) . EXT)) {
                 $method = isset($pathinfoArr[3]) ? $pathinfoArr[3] : 'index';
             } else {
                 if(isset($pathinfoArr[3])) {
@@ -121,10 +122,10 @@ class addon
                 }
             }
         } else {
-            // 默认module
-            $module = 'index';
-            $modulePath = $addonPath . $module . DS;
-            // 默认module指定控制器
+            // 默认appName
+            $appName = 'index';
+            $appPath = $addonPath . $appName . DS;
+            // 默认appName指定控制器
             if(count($pathinfoArr) > 2) {
                 $controller = isset($pathinfoArr[1]) ? $pathinfoArr[1] : 'index';
                 $method = isset($pathinfoArr[2]) ? $pathinfoArr[2] : 'index';
@@ -132,7 +133,7 @@ class addon
                 // index/index/method
                 $method = array_pop($pathinfoArr);
                 // 尝试找下控制器, 如果存在则使用控制器的默认方法
-                if(is_file($modulePath . 'controller' . DS . ucfirst($method) . EXT)) {
+                if(is_file($appPath . 'controller' . DS . ucfirst($method) . EXT)) {
                     // index/method/index
                     $controller = $method;
                     $method = 'index';
@@ -140,18 +141,18 @@ class addon
                 }
             }
 
-            $modulePath = $addonPath . $module . DS;
+            $appPath = $addonPath . $appName . DS;
         }
 
         // dd($addonPath);
-        // dd($module . '/' . $controller . '/' . $method);
-        // dd($modulePath . 'controller' . DS . ucfirst($controller) . EXT);
+        // dd($appName . '/' . $controller . '/' . $method);
+        // dd($appPath . 'controller' . DS . ucfirst($controller) . EXT);
 
         // 判断扩展控制器 or 方法 是否存在
-        if(!is_file($modulePath . 'controller' . DS . ucfirst($controller) . EXT)) {
+        if(!is_file($appPath . 'controller' . DS . ucfirst($controller) . EXT)) {
             throw new HttpException(404, 'Addon '. ucfirst($addon) .' controller not exists:' . ucfirst($controller));
         } else {
-            $class = '\\addon\\' . $addon . '\\' . $module . '\\controller\\' . ucfirst($controller);
+            $class = '\\addon\\' . $addon . '\\' . $appName . '\\controller\\' . ucfirst($controller);
             try {
                 $reflect = new ReflectionMethod($class, $method);
             } catch (ReflectionException $e) {
@@ -161,9 +162,9 @@ class addon
         }
 
         // 设置扩展命名空间
-        $this->app->setNamespace('addon\\' . $addon . '\\' . $module);
+        $this->app->setNamespace('addon\\' . $addon . '\\' . $appName);
         // 把应用目录设置为扩展模块目录
-        $this->app->setAppPath($addonPath . $module . DS);
+        $this->app->setAppPath($addonPath . $appName . DS);
         // 设置运行存储目录
         $this->app->setRuntimePath($this->app->getRuntimePath() . 'addon' . DS . $addon . DS);
         // 设置路由规则目录[特殊路由规则]
@@ -171,10 +172,11 @@ class addon
         // 加载扩展文件
         $this->loadAddon($addon, $addonPath);
 
-        $this->app->request->module($module);
+        // 设置当前访问继承应用, 需要扩展app/Request的方法
+        $this->app->request->appName($appName);
         
-        // dd([$pathinfo, $module . '/' . $controller . '/' . $method]);
-        Route::rule($pathinfo, $module . '/' . $controller . '/' . $method);
+        // dd([$pathinfo, $appName . '/' . $controller . '/' . $method]);
+        Route::rule($pathinfo, $appName . '/' . $controller . '/' . $method);
         return true;
     }
 
